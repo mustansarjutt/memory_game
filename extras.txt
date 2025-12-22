@@ -1,0 +1,21 @@
+// useEffect(() => {
+  //     switch (gameState) {
+  //         case GAME_STATE.IDLE:
+  //             setIsPlayerTurn(false)
+  //             break
+  //         case GAME_STATE.SHOWING:
+  //             setIsPlayerTurn(false)
+  //             break
+  //         case GAME_STATE.PLAYER:
+  //             setIsPlayerTurn(true)
+  //             break
+  //         case GAME_STATE.WON:
+  //             setIsPlayerTurn(false)
+  //             break
+  //         case GAME_STATE.OVER:
+  //             setIsPlayerTurn(false)
+  //             break
+  //         default:
+  //             break
+  //     }
+  // }, [gameState])
