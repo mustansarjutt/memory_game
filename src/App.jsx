@@ -31,7 +31,7 @@ function App() {
           </main>
         </div>
         <footer className="mt-8 text-center text-xs text-slate-600">
-          Built with precision using modern web technologies
+          Coded with ❤️ by <strong>Mustansar Jutt</strong>
         </footer>
       </div>
     </div>

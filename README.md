@@ -1,16 +1,34 @@
-# React + Vite
+# 🧠 Memory Matrix Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive pattern memory game built with **React**, **Vite**, and **Tailwind CSS**. Test your cognitive skills by memorizing and repeating complex grid patterns!
 
-Currently, two official plugins are available:
+![Game Preview](/public/preview.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* **3 Difficulty Levels:**
+    * **Easy:** 4x4 Grid (3-5 tiles to memorize)
+    * **Medium:** 5x5 Grid (5-7 tiles)
+    * **Hard:** 5x5 Grid (8-10 tiles)
+* **High Score System:** Persists your best scores for each difficulty level using `localStorage`.
+* **Interactive Audio:** Custom sound effects for clicks, wins, and game-over states.
+* **Glassmorphism UI:** A sleek, modern interface with backdrop blurs, gradients, and smooth animations.
+* **Fully Responsive:** optimized for both desktop and mobile play.
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+* [React.js](https://reactjs.org/) - Component-based UI library
+* [Vite](https://vitejs.dev/) - Next Generation Frontend Tooling
+* [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+
+## 🚀 Getting Started
+
+Follow these steps to set up the project locally on your machine.
+
+### Prerequisites
+
+Make sure you have npm installed:
+```bash
+npm -v
+```

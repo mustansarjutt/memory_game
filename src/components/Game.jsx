@@ -1,5 +1,11 @@
 import { useEffect, useState, useRef } from "react";
-import { GAME_STATE, gridSize, randomInt, playSound } from "../utils/mgame";
+import {
+  GAME_STATE,
+  randomInt,
+  playSound,
+  DIFFICULTY,
+  DIFFICULTY_SETTINGS,
+} from "../utils/mgame";
 
 function Game() {
   const [targetPattern, setTargetPattern] = useState([]);
@@ -9,35 +15,21 @@ function Game() {
 
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(() => {
-    const score = JSON.parse(localStorage.getItem("highScore"));
-    return score || 0;
+    const score = localStorage.getItem("highScore");
+    const parsed = score ? JSON.parse(score) : null;
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      return parsed;
+    }
+    return { Easy: 0, Medium: 0, Hard: 0 };
   });
+  const [difficulty, setDifficulty] = useState(DIFFICULTY.EASY);
 
-  const generateTargetPattern = () => {
-    let n = randomInt(6, 9);
-    let pattern = [];
-
-    while (pattern.length < n) {
-      let randIndex = randomInt(0, gridSize - 1);
-      if (!pattern.includes(randIndex)) {
-        pattern.push(randIndex);
-      }
+  const getGridSize = () => {
+    if (difficulty === DIFFICULTY.EASY) {
+      return 16;
     }
 
-    setTargetPattern(pattern);
-  };
-
-  const handlePlayerClicks = (index) => {
-    if (gameState !== GAME_STATE.PLAYER) return;
-    if (playerPattern.includes(index)) return;
-    if (!targetPattern.includes(index)) {
-      setLastWrongIndex(index);
-      playSound("lose");
-      setGameState(GAME_STATE.OVER);
-      return;
-    }
-    playSound("click");
-    setPlayerPattern((prev) => [...prev, index]);
+    return 25;
   };
 
   const getBoxColor = (index) => {
@@ -73,6 +65,34 @@ function Game() {
     }
   };
 
+  const generateTargetPattern = () => {
+    const { min, max } = DIFFICULTY_SETTINGS[difficulty];
+    let n = randomInt(min, max);
+    let pattern = [];
+
+    while (pattern.length < n) {
+      let randIndex = randomInt(0, getGridSize() - 1);
+      if (!pattern.includes(randIndex)) {
+        pattern.push(randIndex);
+      }
+    }
+
+    setTargetPattern(pattern);
+  };
+
+  const handlePlayerClicks = (index) => {
+    if (gameState !== GAME_STATE.PLAYER) return;
+    if (playerPattern.includes(index)) return;
+    if (!targetPattern.includes(index)) {
+      setLastWrongIndex(index);
+      playSound("lose");
+      setGameState(GAME_STATE.OVER);
+      return;
+    }
+    playSound("click");
+    setPlayerPattern((prev) => [...prev, index]);
+  };
+
   const timeRef = useRef(null);
   const startGame = () => {
     generateTargetPattern();
@@ -91,8 +111,11 @@ function Game() {
   };
   const finishGame = () => {
     resetGame();
-    if (score > highScore) {
-      setHighScore(score);
+    if (score > highScore[difficulty]) {
+      setHighScore((prev) => ({
+        ...prev,
+        [difficulty]: score
+      }));
     }
     setScore(0);
   };
@@ -123,13 +146,26 @@ function Game() {
       setGameState(GAME_STATE.WON);
     }
   }, [playerPattern, targetPattern, gameState]);
+
   useEffect(() => {
     localStorage.setItem("highScore", JSON.stringify(highScore));
   }, [highScore]);
 
   return (
     <div className="relative flex flex-col items-center gap-y-6 max-w-md mx-auto">
-      {gameState !== GAME_STATE.IDLE && (
+      {gameState === GAME_STATE.IDLE ? (
+        <div className="flex p-1 bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-xl shadow-xl">
+          {["Easy", "Medium", "Hard"].map((level) => (
+            <button
+              key={level}
+              onClick={() => setDifficulty(level)}
+              className={`px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 ${difficulty === level ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/25" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
+            >
+              {level}
+            </button>
+          ))}
+        </div>
+      ) : (
         <div className="flex gap-4 p-1.5 bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-full shadow-xl">
           <div className="px-5 py-1.5 rounded-full bg-white/5 border border-white/5 flex flex-col items-center min-w-20">
             <span className="text-[10px] uppercase tracking-wider text-indigo-300 font-bold">
@@ -141,16 +177,16 @@ function Game() {
           </div>
           <div className="px-5 py-1.5 rounded-full bg-white/5 border border-white/5 flex flex-col items-center min-w-20">
             <span className="text-[10px] uppercase tracking-wider text-purple-300 font-bold">
-              Best
+              Best ({difficulty})
             </span>
             <span className="text-xl font-bold text-white leading-none">
-              {highScore}
+              {highScore[difficulty]}
             </span>
           </div>
         </div>
       )}
-      <div className="relative grid grid-cols-5 gap-3 md:p-5 p-3 bg-slate-900 backdrop-blur-md rounded-3xl border border-white/10 shadow-xl">
-        {Array.from({ length: gridSize }).map((_, index) => (
+      <div className={`relative grid ${difficulty === DIFFICULTY.EASY ? "grid-cols-4" : "grid-cols-5"} gap-3 md:p-5 p-3 bg-slate-900 backdrop-blur-md rounded-3xl border border-white/10 shadow-xl`}>
+        {Array.from({ length: getGridSize() }).map((_, index) => (
           <div
             key={index}
             onClick={() => handlePlayerClicks(index)}
